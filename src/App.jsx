@@ -1,16 +1,21 @@
-// import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './App.css';
-import {NavBar} from './components/NavBar';
-import {Carrito} from './components/Carrito';
-import {ItemListContainer} from './components/ItemListContainer';
-import reactLogo from './assets/react.svg'
+import Carrito from './components/Carrito';
+import { NavBar } from './components/NavBar';
+import { useEffect, useState } from 'react';
+import ItemListContainer from './components/ItemListContainer';
+
 
 function App() {
-  const categorias = ['categoria 1','categoria 2','categoria 3','categoria 4'];
-
+  const [categorias,setCategorias] = useState([]);
+  useEffect(()=>{
+    fetch('https://fakestoreapi.com/products/categories')
+            .then(res=>res.json())
+            .then(json=>setCategorias(json))
+  },[])
   return <>
-      <NavBar items={categorias} logo={reactLogo}><Carrito /></NavBar>
-      <ItemListContainer greeting="Bienvenidos!" />
+      <NavBar items={categorias}><Carrito></Carrito></NavBar>
+      <ItemListContainer title='Tiendita'></ItemListContainer>
   </>;
 }
 

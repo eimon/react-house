@@ -1,36 +1,58 @@
 import { useEffect, useState } from 'react';
-import ItemDetailContainer from './ItemDetailContainer';
+import ItemDetail from './ItemDetail';
+import { useParams,Link } from 'react-router-dom';
+import { NavBar } from './NavBar';
+import CarritoBtn from './CarritoBtn';
 
 const ItemListContainer = ({title}) => {
 
+    const [items, setItems] = useState([]);
+    const [itemsFiltered, setItemsFiltered] = useState([]);
+    const {idCategoria} = useParams()
+    const [isLoading, setIsLoading] = useState(true);
+    const [categorias,setCategorias] = useState([]);
     useEffect(()=>{
-        window.addEventListener("rezise",(event)=>{
-            console.log(event);
-        })
+        fetch('https://fakestoreapi.com/products/categories')
+                .then(res=>res.json())
+                .then(json=>setCategorias(json))
     },[])
 
-    const [esVocal, setEsVocal] = useState(false)
+    useEffect(() => {
+        fetch(idCategoria ? `https://fakestoreapi.com/products/category/${idCategoria}` : 'https://fakestoreapi.com/products')
+            .then(res=>res.json())
+            .then(json=>{
+                setItemsFiltered(json)
+                setItems(json)
+            }).finally(()=>setIsLoading(false))
+    },[idCategoria]);
 
-    const vocales = ['a','e','i','o','u']
-
-    const handleKeyDown = event => {
-        console.log('Evento onKeyDown ',event)
-        const {key} = event
-        console.log('Tecla: ',key)
-        setEsVocal(vocales.some(vocal=>vocal===key))
-        console.log('Es vocal? ',esVocal)
-        if (esVocal)
-            event.preventDefault()
+    const handleSubmit = evento =>{
+        evento.preventDefault()
+        setItemsFiltered(items.filter(item => item.title.toLowerCase().includes(evento.target.parametro.value.toLowerCase())))
     }
+
+    const handleOnClick = () =>{
+        setItemsFiltered([])
+        setIsLoading(true)
+    }
+    
     return <>
-        <main className="container m-5">
-            <h1>{title}</h1>
-            <form>
-                <label>
-                    Un input: <input type="text" onKeyDown={handleKeyDown} />
-                </label>
+        <NavBar items={categorias} handleOnClick={handleOnClick}><CarritoBtn></CarritoBtn></NavBar>
+        <main className="container">
+            <h1>{idCategoria??title}</h1>
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                    <li className={idCategoria?'breadcrumb-item':'breadcrumb-item-active'}><Link to={'/'}>Inicio</Link></li>
+                    {idCategoria&&<li className="breadcrumb-item active">{idCategoria}</li>}
+                </ol>
+            </nav>
+            <form className="d-flex" role="search" onSubmit={handleSubmit}>
+                <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" id='parametro' /> 
+                <button className="btn btn-outline-success" type="submit">Search</button>
             </form>
-            <ItemDetailContainer />
+            {isLoading?<div id="loader"><h3>Cargando...</h3></div>:''}
+            
+            {itemsFiltered.length>0?itemsFiltered.map(item=> <ItemDetail key={item.key} producto={item}/>):<h3 className='m-5'>No se encontraron productos</h3>}
         </main>
     </>;
 };

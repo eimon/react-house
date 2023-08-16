@@ -1,4 +1,6 @@
-export const NavBar = ({items,logo,children}) => {
+import { Link } from 'react-router-dom';
+
+export const NavBar = ({items,logo,children,handleOnClick}) => {
     return <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
             <a className="navbar-brand" href="#"><img src={logo} alt="Logo" /></a>
@@ -8,23 +10,20 @@ export const NavBar = ({items,logo,children}) => {
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">Inicio</a>
+                    <Link className="nav-link active" aria-current="page" to={'/'} onClick={handleOnClick}>Inicio</Link>
                 </li>
                 <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Categorías
-                </a>
-                <ul className="dropdown-menu">
-                {items.map((item)=>{
-                        return <li key={item.id}><a className="dropdown-item" href="#">{item}</a></li>
-                    })}
-                </ul>
+                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categorías
+                    </a>
+                    <ul className="dropdown-menu">
+                    {items.map((item)=>{
+                            return <li key={item.id}><Link to={`/categoria/${item}`} className="dropdown-item" onClick={handleOnClick}>{item}</Link></li>
+                        })}
+                    </ul>
                 </li>
             </ul>
-            <form className="d-flex" role="search">
-                <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" /> 
-                <button className="btn btn-outline-success" type="submit">Search</button>
-            </form>
+            
             {children}
             </div>
         </div>

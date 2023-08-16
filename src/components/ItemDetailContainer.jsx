@@ -1,33 +1,51 @@
-import {useEffect, useState} from "react";
 import ItemDetail from "./ItemDetail";
+//Item individual. Ruta: "/item/:id"
+
+import { useEffect,useState } from "react";
+import { useParams,Link } from 'react-router-dom';
+import { NavBar } from "./NavBar";
+import CarritoBtn from './CarritoBtn';
 
 const ItemDetailContainer = () => {
-    const [item, setItem] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [categorias,setCategorias] = useState([]);
+    useEffect(()=>{
+        fetch('https://fakestoreapi.com/products/categories')
+                .then(res=>res.json())
+                .then(json=>setCategorias(json))
+    },[])
 
-    useEffect(() => {
-        setTimeout(()=>{
-            setItem({
-                descripcion: "esta es una descripcion",
-                precio: 230
-            });
-            setIsLoading(false)
-        },2000);
-    },[]);
+    const [item,setItem] = useState({})
+    const {idItem} = useParams()
+    useEffect(()=>{
+        fetch(`https://fakestoreapi.com/products/${idItem}`)
+            .then(res=>res.json())
+            .then(json=>{
+                setItem(json)
+                setIsLoading(false)
+            })
+    },[idItem]);
 
-    if (isLoading) {
-        return (
-            <div id="loader">
-                <h3>Cargando...</h3>
-            </div>
-        )
+    const handleOnClick = () =>{
+        setItem([])
+        setIsLoading(true)
     }
+
     
-    return (
-        <div>
-            <ItemDetail descripcion={item.descripcion} precio={item.precio} />
+    return <>
+        <NavBar items={categorias} handleOnClick={handleOnClick}><CarritoBtn></CarritoBtn></NavBar>
+        <div className="container my-3">
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                    <li className='breadcrumb-item'><Link to={'/'}>Inicio</Link></li>
+                    <li className="breadcrumb-item"><Link to={`/categoria/${item.category}`}>{item.category}</Link></li>
+                    <li className="breadcrumb-item active">{item.title}</li>
+                </ol>
+            </nav>
+            {isLoading?<div id="loader"><h3>Cargando...</h3></div>:<ItemDetail key={item.key} producto={item} imagen={true}/>}
+                
         </div>
-    );
+    </>
 }
 
 export default ItemDetailContainer;

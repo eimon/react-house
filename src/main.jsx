@@ -1,21 +1,28 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React, { createContext } from "react";
+import ReactDOM from "react-dom/client";
+// import 'bootstrap/dist/css/bootstrap.min.css';
 // import App from './App.jsx'
-import './index.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ItemListContainer from './components/ItemListContainer.jsx';
-import ItemDetailContainer from './components/ItemDetailContainer.jsx';
-import Carrito from './components/Carrito';
+import "./index.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ItemListContainer from "./components/ItemListContainer.jsx";
+import ItemDetailContainer from "./components/ItemDetailContainer.jsx";
+import { ChakraProvider } from "@chakra-ui/react";
+import CartProvider from "./context/cartContext";
+import Admin from "./components/Admin";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<ItemListContainer title='Tiendita'/>} />
-          <Route path='/categoria/:idCategoria' element={<ItemListContainer />} />
-          <Route path='/item/:idItem' element={<ItemDetailContainer />} />
-          <Route path='/carrito' element={<Carrito />} />
-        </Routes>
-    </BrowserRouter>
-  </React.StrictMode>,
-)
+    <ChakraProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<ItemListContainer />} />
+            <Route path="/categoria/:idCategoria" element={<ItemListContainer />} />
+            <Route path="/item/:idItem" element={<ItemDetailContainer />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
+    </ChakraProvider>
+  </React.StrictMode>
+);

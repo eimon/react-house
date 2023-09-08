@@ -1,12 +1,27 @@
 import { Link } from "react-router-dom";
+import { Image, Card,CardBody,CardFooter,Heading,Text,Stack } from "@chakra-ui/react";
+import AddToCart from "./AddToCart";
 
-const ItemDetail = ({producto,imagen}) => {
-    return <div className="card my-3 p-3">
-        {imagen&&<img src={producto.image} className="w-50 m-auto p-5"/>}
-        <h3><Link to={`/item/`+producto.id} className="dropdown-item">{producto.title}</Link></h3>
-        <p>Descripcion: {producto.description}</p>
-        <p>Precio: ${producto.price}</p>
-    </div>
-}
+const ItemDetail = ({ producto, isSingle=false }) => {
+
+  return (
+    
+    <Card maxW='sm'>
+      <CardBody>
+        <Image src={producto.image} alt={producto.title} borderRadius='lg' height="200px" m="auto" />
+        <Stack mt='6' spacing='3'>
+          <Heading size='md'><Link to={`/item/${producto.id}`}>{producto.title}</Link></Heading>
+          <Text>{isSingle?producto.description:producto.description.substring(0,100)}</Text>
+          <Text color='blue.600' fontSize='2xl'>
+            ${producto.price}
+          </Text>
+        </Stack>
+      </CardBody>
+      <CardFooter>
+        <AddToCart producto={producto} />
+      </CardFooter>
+    </Card>
+  );
+};
 
 export default ItemDetail;

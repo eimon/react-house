@@ -1,31 +1,54 @@
 import { Link } from 'react-router-dom';
+import CarritoWidget from './CarritoWidget';
+import { useEffect, useState } from 'react';
+import { Flex,Menu, MenuButton, MenuList, MenuItem,Button, Heading, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '@chakra-ui/react';
+import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
-export const NavBar = ({items,logo,children,handleOnClick}) => {
-    return <nav className="navbar navbar-expand-lg bg-body-tertiary">
-        <div className="container-fluid">
-            <a className="navbar-brand" href="#"><img src={logo} alt="Logo" /></a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                    <Link className="nav-link active" aria-current="page" to={'/'} onClick={handleOnClick}>Inicio</Link>
-                </li>
-                <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Categorías
-                    </a>
-                    <ul className="dropdown-menu">
-                    {items.map((item)=>{
-                            return <li key={item.id}><Link to={`/categoria/${item}`} className="dropdown-item" onClick={handleOnClick}>{item}</Link></li>
-                        })}
-                    </ul>
-                </li>
-            </ul>
-            
-            {children}
-            </div>
-        </div>
-    </nav>;
+
+export const NavBar = ({logo,titulo,handleOnClick,navigation}) => {
+    const [categorias,setCategorias] = useState([]);
+    useEffect(()=>{
+        fetch('https://fakestoreapi.com/products/categories')
+                .then(res=>res.json())
+                .then(json=>setCategorias(json))
+    },[])
+
+    return <>
+        <Flex position={'sticky'} top={0} zIndex={999} bg={'whitesmoke'} flexDirection={'row'} justifyContent={'space-between'}>
+            <Flex justifyContent={'flex-start'}>
+            <Menu>
+                <Button>
+                    <Link to={'/'}>Inicio</Link>
+                </Button>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                    Categorías
+                </MenuButton>
+                <MenuList>
+                    {categorias.map((item,index)=>{
+                        return (<MenuItem key={index}>
+                                <Link to={`/categoria/${item}`} onClick={handleOnClick}>
+                                        {item}
+                                    </Link>
+                                </MenuItem>)
+                    })}
+                </MenuList>
+                </Menu>
+            </Flex>
+            <Flex justifyContent={'flex-start-end'}>            
+                <CarritoWidget />
+            </Flex>
+        </Flex>
+
+        <Heading textAlign={'center'} mt={10}>{titulo??'Tiendita'}</Heading>
+        <Flex justify={'center'}>
+            <Breadcrumb spacing='8px' mb={10} separator={<ChevronRightIcon color='gray.500' fontSize='sm' />}>
+                {navigation.map((nav,index)=>{
+                    return (
+                    <BreadcrumbItem key={index}>
+                        <BreadcrumbLink as={Link} to={nav.link}>{nav.name}</BreadcrumbLink>
+                    </BreadcrumbItem>
+                )})}
+            </Breadcrumb>
+        </Flex>
+        </>;
 };

@@ -4,7 +4,7 @@ import ItemDetail from "./ItemDetail";
 import { useEffect,useState } from "react";
 import { useParams,Link } from 'react-router-dom';
 import { NavBar } from "./NavBar";
-import CarritoBtn from './CarritoBtn';
+import CarritoWidget from './CarritoWidget';
 
 const ItemDetailContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +22,7 @@ const ItemDetailContainer = () => {
             .then(res=>res.json())
             .then(json=>{
                 setItem(json)
-                setIsLoading(false)
+                setIsLoading(true)
             })
     },[idItem]);
 
@@ -33,7 +33,7 @@ const ItemDetailContainer = () => {
 
     
     return <>
-        <NavBar items={categorias} handleOnClick={handleOnClick}><CarritoBtn></CarritoBtn></NavBar>
+        <NavBar items={categorias} handleOnClick={handleOnClick}><CarritoWidget /></NavBar>
         <div className="container my-3">
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
@@ -42,7 +42,7 @@ const ItemDetailContainer = () => {
                     <li className="breadcrumb-item active">{item.title}</li>
                 </ol>
             </nav>
-            {isLoading?<div id="loader"><h3>Cargando...</h3></div>:<ItemDetail key={item.key} producto={item} imagen={true}/>}
+            {isLoading?<div id="loader"><h3>Cargando...</h3></div>:<ItemDetail key={item.key} producto={item} isSingle={true}/>}
                 
         </div>
     </>

@@ -5,11 +5,15 @@ import { useEffect,useState } from "react";
 import { useParams,Link } from 'react-router-dom';
 import { NavBar } from "./NavBar";
 import CarritoWidget from './CarritoWidget';
-import { Container } from "@chakra-ui/react";
+import { Container, SimpleGrid } from "@chakra-ui/react";
+import Loader from './Loader';
+import { firestore } from "../firebase/client";
+import { collection, query, where,getDocs } from "firebase/firestore";
 
 const ItemDetailContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [categorias,setCategorias] = useState([]);
+    const [navigation,setNavigation] = useState([])
     useEffect(()=>{
         fetch('https://fakestoreapi.com/products/categories')
                 .then(res=>res.json())
@@ -18,25 +22,24 @@ const ItemDetailContainer = () => {
 
     const [item,setItem] = useState({})
     const {idItem} = useParams()
-    useEffect(()=>{
-        fetch(`https://fakestoreapi.com/products/${idItem}`)
-            .then(res=>res.json())
-            .then(json=>{
-                setItem(json)
-                setIsLoading(true)
-            })
-    },[idItem]);
 
     const handleOnClick = () =>{
-        setItem([])
         setIsLoading(true)
     }
 
-    
+    useEffect(()=>{
+        setNavigation([{link:'/',name:'Inicio'}])
+        const docsRef = collection(firestore,'productos')
+        const query = query(docsRef,where('id','==',idItem))
+        getDocs(query).then(doc=>{
+            console.log(doc.metadata())
+        })
+        setNavigation([{link:'/',name:'Inicio'},{link:`/categoria/asdf`,name:'idCategoria'}])
+    },[idItem]);
+
     return <>
-        <NavBar items={categorias} handleOnClick={handleOnClick}><CarritoWidget /></NavBar>
         <Container maxW='1200px'>
-            <NavBar handleOnClick={handleOnClick} titulo={idCategoria??'Tiendita'} navigation={navigation} />
+            <NavBar items={categorias} handleOnClick={handleOnClick} titulo={item.title} navigation={navigation} ><CarritoWidget /></NavBar>
             
             {isLoading?<Loader />:''}
             

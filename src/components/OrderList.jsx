@@ -1,13 +1,33 @@
-import { Accordion, AccordionItem } from "@chakra-ui/react"
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Card, Flex, Text } from "@chakra-ui/react"
+import { useCartContext } from "../context/cartContext";
 
-const OrderList = ({items}) => {
-    items.map((item,index)=>{
-        return <>
-            <Accordion key={index} >
-                <AccordionItem>{item.cant}x {item.title}: ${item.price*item.cant}</AccordionItem>
+
+const OrderList = ({orden}) => {
+        return <Card p={10}>
+            {console.log(orden)}
+            <Text>Comprador: {orden.comprador.nombre}</Text>
+            <Text>Fecha: {orden.fecha}</Text>
+            <Accordion allowToggle>
+                <AccordionItem>
+                <h2>
+                <AccordionButton>
+                    <Box as="span" flex='1' textAlign='left'>
+                    Items
+                    </Box>
+                    <AccordionIcon />
+                </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                    {orden.items.map((item,index)=>{
+                        return <Flex key={index}>
+                                    {item.cant}x {item.title}: ${item.price*item.cant}
+                                </Flex>
+                    })}
+                </AccordionPanel>
+            </AccordionItem>
             </Accordion>
-        </>
-    })
+            <Text as={'span'}>Total: ${orden.total}</Text>
+        </Card>
 }
 
 export default OrderList

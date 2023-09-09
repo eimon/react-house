@@ -1,4 +1,4 @@
-import { Button, Card, Container, Flex, Heading, Text, useBoolean } from "@chakra-ui/react"
+import { Box, Button, Card, Container, Flex, Heading, Text, useBoolean } from "@chakra-ui/react"
 import { NavBar } from "./NavBar"
 import { firestore } from "../firebase/client"
 import { addDoc, collection, getDocs, getDoc, doc } from "firebase/firestore"; 
@@ -19,10 +19,10 @@ function Admin(){
             snap.forEach((order)=>{
                 o.push(order.data())
             })
-        }).finally(
-            setOrdenes(o),
-        )
-    },[ordenes])
+            setIsLoading(false)
+            setOrdenes(o)
+        })
+    },[])
 
     
     async function handleAgregarProductos() {
@@ -75,14 +75,8 @@ function Admin(){
         </Flex>
 
         <Flex direction={'column'} gap={6} my={10}>
-            <Heading as={'h4'}>Órdenes: </Heading>
-            <Text>{ordenes.length}</Text>
-            {ordenes.length>0??ordenes.map((orden,index)=>{
-                return <><Card key={index} p={10}>
-                        <Text>Comprador: {orden.comprador.nombre}</Text>
-                        <Text>${orden.total}</Text>
-                    </Card></>
-            })}
+            <Heading as={'h4'}>Órdenes ({ordenes.length}): </Heading>
+            {ordenes.length>0?ordenes.map((orden,index)=><Box key={index}><OrderList orden={orden} /></Box>):<Text>No hay ordenes</Text>}
         </Flex>
     </Container>
     </>

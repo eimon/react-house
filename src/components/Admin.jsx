@@ -11,6 +11,8 @@ function Admin(){
     const [categoriasDB,setCategoriasDB] = useState([])
     const [ordenes,setOrdenes] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [productosLog, setProductosLog] = useState('')
+    const [catLog, setCatLog] = useState('')
 
     useEffect(()=>{
         const o = []
@@ -26,7 +28,7 @@ function Admin(){
 
     
     async function handleAgregarProductos() {
-        let omitidos = 0;
+        let prodAdd = 0;
         setProductosDB([])
         const productosRef = collection(firestore,'productos')
         const productoSnapshot = await getDocs(productosRef)
@@ -35,29 +37,29 @@ function Admin(){
         })
         fetch('./mockup/productos.json').then(response=>response.json()).then(json=>{
             json.forEach(item=>{
-                if(productosDB.some(p=>p.id==item.id))
-                    omitidos++
-                else
+                if(!productosDB.some(p=>p.id==item.id)){
+                    prodAdd++
                     addDoc(productosRef,item).catch(e=>console.error(e))
+                }  
             })
-            console.log('Productos omitidos: ',omitidos)
+            setProductosLog(`Se agregaron ${prodAdd} producto(s)`)
         })
     }
 
     async function handleAgregarCategorias() {
-        let omitidosCat = 0
+        let catAdd = 0
         setCategoriasDB([])
         const categoriasRef = collection(firestore,'categorias')
         const categoriasSnapshot = await getDocs(categoriasRef)
         categoriasSnapshot.forEach(cat=>categoriasDB.push(cat.data()))
         fetch('./mockup/categories.json').then(response=>response.json()).then(json=>{
             json.forEach(item=>{
-                if(categoriasDB.some(c=>c.name==item))
-                    omitidosCat++
-                else
+                if(!categoriasDB.some(c=>c.name==item)){
+                    catAdd++
                     addDoc(categoriasRef,{name:item})
+                }
             })
-            console.log('Categorías omitidas: ',omitidosCat)
+            setCatLog(`Se agregaron ${catAdd} categoría(s)`)
         }).catch(e=>console.error(e))
     }
 
@@ -68,10 +70,12 @@ function Admin(){
     <Container maxW='1200px'>
         <NavBar navigation={[{link:'/admin',name:'Administracion',active:true}]}/>
         <Flex my={4}>
-            <Button onClick={handleAgregarProductos}>Agregar productos</Button>
+            <Button onClick={handleAgregarProductos}>Agregar productos a firestore</Button>
+            <Text p={2}>{productosLog}</Text>
         </Flex>
         <Flex>
             <Button onClick={handleAgregarCategorias}>Agregar categorías</Button>
+            <Text p={2}>{catLog}</Text>
         </Flex>
 
         <Flex direction={'column'} gap={6} my={10}>

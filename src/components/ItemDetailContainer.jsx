@@ -5,10 +5,10 @@ import { useEffect,useState } from "react";
 import { useParams,Link } from 'react-router-dom';
 import { NavBar } from "./NavBar";
 import CarritoWidget from './CarritoWidget';
-import { Container, SimpleGrid } from "@chakra-ui/react";
+import { Container, Flex, SimpleGrid } from "@chakra-ui/react";
 import Loader from './Loader';
 import { firestore } from "../firebase/client";
-import { collection, query, where,getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 const ItemDetailContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -28,14 +28,20 @@ const ItemDetailContainer = () => {
     }
 
     useEffect(()=>{
-        setNavigation([{link:'/',name:'Inicio'}])
+        let itemDB = {}
         const docsRef = collection(firestore,'productos')
-        const query = query(docsRef,where('id','==',idItem))
-        getDocs(query).then(doc=>{
-            console.log(doc.metadata())
+        getDocs(docsRef).then((snap)=>{
+            snap.forEach(i=>{
+                if(i.data().id==idItem){
+                    itemDB = {...i.data()}
+                }
+            })
+            setItem(itemDB)
+            setIsLoading(false)
         })
-        setNavigation([{link:'/',name:'Inicio'},{link:`/categoria/asdf`,name:'idCategoria'}])
-    },[idItem]);
+        setItem(itemDB)
+        setNavigation([{link:'/',name:'Inicio'},{link:`/categoria/${itemDB.category}`,name:itemDB.category},{link:`/item/${itemDB.id}`,name:itemDB.title}])
+    },[]);
 
     return <>
         <Container maxW='1200px'>
@@ -43,9 +49,9 @@ const ItemDetailContainer = () => {
             
             {isLoading?<Loader />:''}
             
-            <SimpleGrid columns={1} spacing={10} my={10}>
-                <ItemDetail producto={item}/>
-            </SimpleGrid>
+            <Flex maxWidth={'sm'} m={'auto'}>
+                <ItemDetail producto={item} isSingle={true} />
+            </Flex>
         </Container>
     </>
 }

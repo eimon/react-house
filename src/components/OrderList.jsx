@@ -19,14 +19,14 @@ const OrderList = ({orden}) => {
                 </h2>
                 <AccordionPanel pb={4}>
                     {orden.items.map((item,index)=>{
-                        return <Flex key={index}>
-                                    {item.cant}x {item.title}: ${item.price*item.cant}
+                        return <Flex key={index} justify={'space-between'}>
+                                    <Text>{item.cant}x {item.title}</Text><Text>${item.price*item.cant}</Text>
                                 </Flex>
                     })}
                 </AccordionPanel>
             </AccordionItem>
             </Accordion>
-            <Text as={'span'}>Total: ${orden.total}</Text>
+            <Text as={'span'} textAlign={'right'}>Total: ${orden.total}</Text>
         </Card>
 }
 

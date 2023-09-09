@@ -1,5 +1,5 @@
 import { doc, getDoc } from "firebase/firestore";
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext } from "react";
 import { firestore } from "../firebase/client";
 
 export const CartContext = createContext([])
@@ -11,7 +11,12 @@ function CartProvider({children}) {
     const agregarItem = (producto,cant) => {
         if(!isInCart(producto.id))
             items.push(producto)
-        items[items.findIndex(p=>p.id===producto.id)].cant+=cant
+        items.find(p=>p.id===producto.id).cant+=cant
+    }
+
+    const quitarItem = (producto) => {
+        if(isInCart(producto.id))
+            items.splice(items.findIndex(p=>p.id===producto.id))
     }
     const isInCart = (id) => {
         if(items.find(p=>p.id===id))
@@ -31,6 +36,7 @@ function CartProvider({children}) {
     return <CartContext.Provider value={{
             items,
             agregarItem,
+            quitarItem,
             getTotal,
             updateTotalItems,
             total,

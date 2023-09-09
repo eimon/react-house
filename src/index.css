@@ -9,3 +9,7 @@
 h3{
     overflow: hidden;
 }
+
+.swal2-container{
+    z-index: 10000;
+}

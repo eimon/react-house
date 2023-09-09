@@ -1,6 +1,7 @@
 // import { Link } from 'react-router-dom';
-import { Badge, Box, useDisclosure,Button,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,Text, Divider } from '@chakra-ui/react';
+import { Badge, Box, useDisclosure,Button,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,Text, Divider, Flex,NumberInput,NumberDecrementStepper,NumberInputField,NumberIncrementStepper,NumberInputStepper } from '@chakra-ui/react';
 import { useCartContext } from '../context/cartContext';
+import ContadorCarrito from './ContadorCarrito';
 
 const CarritoWidget = (() => {
     const { items, getTotal, total } = useCartContext()
@@ -19,8 +20,11 @@ const CarritoWidget = (() => {
                 <ModalCloseButton />
                 <ModalBody>
                     {items.map((item,index)=>{
-                        return (<Box key={index}><Text>{item.cant} x {item.title.substring(0,40)}</Text>
-                                <Text align="right">${item.cant*item.price}</Text></Box>)
+                        return (<Flex key={index}>
+                                    <Text>{item.cant}x {item.title.substring(0,40)}</Text>
+                                    <ContadorCarrito item={item} />
+                                    <Text align="right">${item.cant*item.price}</Text>
+                                </Flex>)
                     })}
                     <Divider />
                     <Text align="right" fontWeight="600">${getTotal()}</Text>

@@ -4,7 +4,7 @@ function useProduct(producto,cant){
         id:producto.id,
         title:producto.title,
         price:producto.price,
-        cant:cant,
+        cant:0,
     }
 }
 

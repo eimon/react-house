@@ -17,19 +17,21 @@ export const NavBar = ({logo,titulo,handleOnClick,navigation}) => {
         <Flex position={'sticky'} top={0} zIndex={999} bg={'whitesmoke'} flexDirection={'row'} justifyContent={'space-between'}>
             <Flex justifyContent={'flex-start'}>
             <Menu>
-                <Button>
-                    <Link to={'/'}>Inicio</Link>
-                </Button>
+                <Link to={'/'}>
+                    <Button>
+                        Inicio
+                    </Button>
+                </Link>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                     Categorías
                 </MenuButton>
                 <MenuList>
                     {categorias.map((item,index)=>{
-                        return (<MenuItem key={index}>
-                                <Link to={`/categoria/${item}`} onClick={handleOnClick}>
+                        return (<Link key={index} to={`/categoria/${item}`} onClick={handleOnClick}><MenuItem>
                                         {item}
+                                        </MenuItem>
                                     </Link>
-                                </MenuItem>)
+                                )
                     })}
                 </MenuList>
                 </Menu>

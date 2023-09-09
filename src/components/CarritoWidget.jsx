@@ -2,6 +2,7 @@
 import { Badge, Box, useDisclosure,Button,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,Text, Divider, Flex,NumberInput,NumberDecrementStepper,NumberInputField,NumberIncrementStepper,NumberInputStepper } from '@chakra-ui/react';
 import { useCartContext } from '../context/cartContext';
 import ContadorCarrito from './ContadorCarrito';
+import { Link } from 'react-router-dom';
 
 const CarritoWidget = (() => {
     const { items, getTotal, total } = useCartContext()
@@ -22,7 +23,7 @@ const CarritoWidget = (() => {
                     {items.map((item,index)=>{
                         return (<Flex key={index}>
                                     <Text>{item.cant}x {item.title.substring(0,40)}</Text>
-                                    <ContadorCarrito item={item} />
+                                    <ContadorCarrito item={item} onClose={onClose} />
                                     <Text align="right">${item.cant*item.price}</Text>
                                 </Flex>)
                     })}
@@ -34,7 +35,7 @@ const CarritoWidget = (() => {
                     <Button colorScheme='blue' mr={3} onClick={onClose}>
                     Cerrar
                     </Button>
-                    <Button variant='ghost'>Finalizar Compra</Button>
+                    {getTotal()>0?<Button variant='ghost' as={Link} to={'/checkout'} >Finalizar Compra</Button>:''}
                 </ModalFooter>
                 </ModalContent>
             </Modal>

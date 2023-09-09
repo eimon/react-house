@@ -5,7 +5,7 @@ import { NavBar } from './NavBar';
 import Loader from './Loader';
 import { Container, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { firestore } from '../firebase/client';
-import { collection, getDocs, where, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, where, query } from 'firebase/firestore';
 
 const ItemListContainer = () => {
 
@@ -20,9 +20,9 @@ const ItemListContainer = () => {
         let itemsRef = collection(firestore,"productos")
         if(idCategoria){
             itemsRef = query(itemsRef,where("category","==",idCategoria))
-            setNavigation([{link:'/',name:'Inicio',active:true},{link:`/categoria/${idCategoria}`,name:idCategoria,active:false}])
+            setNavigation([{link:'/',name:'Inicio'},{link:`/categoria/${idCategoria}`,name:idCategoria}])
         }else
-            setNavigation([{link:'/',name:'Inicio',active:true}])
+            setNavigation([{link:'/',name:'Inicio'}])
         getDocs(itemsRef).then((snap)=>{
             snap.forEach(item=>{
                 i.push(item.data())

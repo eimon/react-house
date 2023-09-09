@@ -5,7 +5,7 @@ import { firestore } from "../firebase/client";
 export const CartContext = createContext([])
 
 function CartProvider({children}) {
-    const [items] = useState([])
+    const [items,setItems] = useState([])
     const [total,setTotal] = useState(0)
 
     const agregarItem = (producto,cant) => {
@@ -16,7 +16,7 @@ function CartProvider({children}) {
 
     const quitarItem = (producto) => {
         if(isInCart(producto.id))
-            items.splice(items.findIndex(p=>p.id===producto.id))
+            items.splice(items.findIndex(p=>p.id==producto.id),1)
     }
     const isInCart = (id) => {
         if(items.find(p=>p.id===id))
@@ -33,12 +33,18 @@ function CartProvider({children}) {
         setTotal(items.reduce((a,p)=>a+p.cant,0))
     }
 
+    const vaciarCarrito = () => {
+        setItems([])
+        setTotal(0)
+    }
+
     return <CartContext.Provider value={{
             items,
             agregarItem,
             quitarItem,
             getTotal,
             updateTotalItems,
+            vaciarCarrito,
             total,
         }}>
         {children}

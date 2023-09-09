@@ -1,13 +1,29 @@
-import { Button, Container, Flex } from "@chakra-ui/react"
+import { Button, Card, Container, Flex, Heading, Text, useBoolean } from "@chakra-ui/react"
 import { NavBar } from "./NavBar"
 import { firestore } from "../firebase/client"
 import { addDoc, collection, getDocs, getDoc, doc } from "firebase/firestore"; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import OrderList from "./OrderList";
+import Loader from "./Loader";
 
 function Admin(){
     const [productosDB,setProductosDB] = useState([])
-    const [categorias,setCategorias] = useState([])
     const [categoriasDB,setCategoriasDB] = useState([])
+    const [ordenes,setOrdenes] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(()=>{
+        const o = []
+        const ordersRef = collection(firestore,'ordenes')
+        getDocs(ordersRef).then((snap)=>{
+            snap.forEach((order)=>{
+                o.push(order.data())
+            })
+        }).finally(
+            setOrdenes(o),
+        )
+    },[ordenes])
+
     
     async function handleAgregarProductos() {
         let omitidos = 0;
@@ -15,7 +31,6 @@ function Admin(){
         const productosRef = collection(firestore,'productos')
         const productoSnapshot = await getDocs(productosRef)
         productoSnapshot.forEach(prod=>{
-            console.log(prod.data())
             productosDB.push(prod.data())
         })
         fetch('./mockup/productos.json').then(response=>response.json()).then(json=>{
@@ -46,14 +61,28 @@ function Admin(){
         }).catch(e=>console.error(e))
     }
 
+    if(isLoading)
+        return <Loader />
+
     return <>
     <Container maxW='1200px'>
         <NavBar navigation={[{link:'/admin',name:'Administracion',active:true}]}/>
-        <Flex mb={4}>
+        <Flex my={4}>
             <Button onClick={handleAgregarProductos}>Agregar productos</Button>
         </Flex>
         <Flex>
             <Button onClick={handleAgregarCategorias}>Agregar categorías</Button>
+        </Flex>
+
+        <Flex direction={'column'} gap={6} my={10}>
+            <Heading as={'h4'}>Órdenes: </Heading>
+            <Text>{ordenes.length}</Text>
+            {ordenes.length>0??ordenes.map((orden,index)=>{
+                return <><Card key={index} p={10}>
+                        <Text>Comprador: {orden.comprador.nombre}</Text>
+                        <Text>${orden.total}</Text>
+                    </Card></>
+            })}
         </Flex>
     </Container>
     </>

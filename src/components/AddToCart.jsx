@@ -23,7 +23,6 @@ function AddToCart({producto}) {
         confirmButtonText: 'Agregar',
         cancelButtonText: `Cancelar`,
       }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           agregarItem(producto_carrito,valor)
           Swal.fire('Agregado!', '', 'success')

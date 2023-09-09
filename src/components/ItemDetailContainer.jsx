@@ -5,6 +5,7 @@ import { useEffect,useState } from "react";
 import { useParams,Link } from 'react-router-dom';
 import { NavBar } from "./NavBar";
 import CarritoWidget from './CarritoWidget';
+import { Container } from "@chakra-ui/react";
 
 const ItemDetailContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -34,17 +35,15 @@ const ItemDetailContainer = () => {
     
     return <>
         <NavBar items={categorias} handleOnClick={handleOnClick}><CarritoWidget /></NavBar>
-        <div className="container my-3">
-            <nav aria-label="breadcrumb">
-                <ol className="breadcrumb">
-                    <li className='breadcrumb-item'><Link to={'/'}>Inicio</Link></li>
-                    <li className="breadcrumb-item"><Link to={`/categoria/${item.category}`}>{item.category}</Link></li>
-                    <li className="breadcrumb-item active">{item.title}</li>
-                </ol>
-            </nav>
-            {isLoading?<div id="loader"><h3>Cargando...</h3></div>:<ItemDetail key={item.key} producto={item} isSingle={true}/>}
-                
-        </div>
+        <Container maxW='1200px'>
+            <NavBar handleOnClick={handleOnClick} titulo={idCategoria??'Tiendita'} navigation={navigation} />
+            
+            {isLoading?<Loader />:''}
+            
+            <SimpleGrid columns={1} spacing={10} my={10}>
+                <ItemDetail producto={item}/>
+            </SimpleGrid>
+        </Container>
     </>
 }
 

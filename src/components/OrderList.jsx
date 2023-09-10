@@ -4,7 +4,6 @@ import { useCartContext } from "../context/cartContext";
 
 const OrderList = ({orden}) => {
         return <Card p={10}>
-            {console.log(orden)}
             <Text>Comprador: {orden.comprador.nombre}</Text>
             <Text>Fecha: {orden.fecha}</Text>
             <Accordion allowToggle>

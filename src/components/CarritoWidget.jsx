@@ -1,8 +1,7 @@
-// import { Link } from 'react-router-dom';
-import { Badge, Box, useDisclosure,Button,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,Text, Divider, Flex,NumberInput,NumberDecrementStepper,NumberInputField,NumberIncrementStepper,NumberInputStepper } from '@chakra-ui/react';
+import { Badge, Box, useDisclosure,Button,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,Text, Divider, Flex } from '@chakra-ui/react';
 import { useCartContext } from '../context/cartContext';
-import ContadorCarrito from './ContadorCarrito';
 import { Link } from 'react-router-dom';
+import DeleteBtn from './DeleteBtn';
 
 const CarritoWidget = (() => {
     const { items, getTotal, total } = useCartContext()
@@ -21,10 +20,10 @@ const CarritoWidget = (() => {
                 <ModalCloseButton />
                 <ModalBody>
                     {items.map((item,index)=>{
-                        return (<Flex key={index}>
+                        return (<Flex key={index} justifyContent={'space-between'} border={'solid 1px gray'} borderRadius={'10px'} p={2} my={1}>
                                     <Text>{item.cant}x {item.title.substring(0,40)}</Text>
-                                    <ContadorCarrito item={item} onClose={onClose} />
-                                    <Text align="right">${item.cant*item.price}</Text>
+                                    
+                                    <Text align="right" minWidth={'90px'}>${item.cant*item.price}<DeleteBtn item={item} onClose={onClose} /></Text>
                                 </Flex>)
                     })}
                     <Divider />
@@ -35,7 +34,7 @@ const CarritoWidget = (() => {
                     <Button colorScheme='blue' mr={3} onClick={onClose}>
                     Cerrar
                     </Button>
-                    {getTotal()>0?<Button variant='ghost' as={Link} to={'/checkout'} >Finalizar Compra</Button>:''}
+                    {getTotal()>0?<Button variant='ghost' as={Link} to={'/checkout'} onClick={onClose} >Finalizar Compra</Button>:''}
                 </ModalFooter>
                 </ModalContent>
             </Modal>

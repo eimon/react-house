@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import CarritoWidget from './CarritoWidget';
 import { useEffect, useState } from 'react';
-import { Flex,Menu, MenuButton, MenuList, MenuItem,Button, Heading, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '@chakra-ui/react';
-import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Flex,Menu, MenuButton, MenuList, MenuItem,Button} from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 
-export const NavBar = ({logo,titulo,handleOnClick,navigation}) => {
+export const NavBar = ({logo,handleOnClick}) => {
     const [categorias,setCategorias] = useState([]);
     useEffect(()=>{
         fetch('https://fakestoreapi.com/products/categories')
@@ -14,7 +14,7 @@ export const NavBar = ({logo,titulo,handleOnClick,navigation}) => {
     },[])
 
     return <>
-        <Flex position={'sticky'} top={0} zIndex={999} bg={'whitesmoke'} flexDirection={'row'} justifyContent={'space-between'}>
+        <Flex position={'sticky'} top={0} zIndex={999} bg={'whitesmoke'} flexDirection={'row'} justifyContent={'space-between'} p={10}>
             <Flex justifyContent={'flex-start'}>
             <Menu>
                 <Link to={'/'}>
@@ -41,16 +41,6 @@ export const NavBar = ({logo,titulo,handleOnClick,navigation}) => {
             </Flex>
         </Flex>
 
-        <Heading textAlign={'center'} mt={10}>{titulo??'Tiendita'}</Heading>
-        <Flex justify={'center'}>
-            <Breadcrumb spacing='8px' mb={10} separator={<ChevronRightIcon color='gray.500' fontSize='sm' />}>
-                {navigation.map((nav,index)=>{
-                    return (
-                    <BreadcrumbItem key={index}>
-                        <BreadcrumbLink as={Link} to={nav.link}>{nav.name}</BreadcrumbLink>
-                    </BreadcrumbItem>
-                )})}
-            </Breadcrumb>
-        </Flex>
+        
         </>;
 };

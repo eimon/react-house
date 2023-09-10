@@ -1,5 +1,4 @@
-import { Box, Button, Container, Flex, FormControl, FormHelperText, FormLabel, Heading, Input, SimpleGrid, Text } from "@chakra-ui/react"
-import { NavBar } from "./NavBar"
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, ListItem, SimpleGrid, Text, UnorderedList } from "@chakra-ui/react"
 import { useState } from "react"
 import { useCartContext } from "../context/cartContext"
 import { addDoc, collection } from "firebase/firestore"
@@ -7,6 +6,7 @@ import { firestore } from "../firebase/client"
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { TitleBar } from "./TitleBar"
 
 const Checkout = () => {
     const [email, setEmail] = useState('')
@@ -51,7 +51,7 @@ const Checkout = () => {
 
     return <>
     <Container maxW='1200px'>
-        <NavBar navigation={[{link:'/',name:'Inicio',active:true},{link:'/checkout',name:'Checkout',active:true}]} titulo={'Checkout'} />
+        <TitleBar navigation={[{link:'/',name:'Inicio',active:true},{link:'/checkout',name:'Checkout',active:true}]} titulo={'Checkout'} />
         <SimpleGrid columns={2} spacing={10}>
         <Flex maxWidth={'600px'} margin={'auto'}>
             <FormControl>
@@ -65,12 +65,15 @@ const Checkout = () => {
             </FormControl>
         </Flex>
         <Box>
+            <Heading as={'h6'}>Productos: </Heading>
+            <UnorderedList>
             {items.map((item,index)=>{
-                return <Flex key={index} direction={'row'} justify={'space-between'}>
+                return <ListItem key={index}><Flex direction={'row'} justify={'space-between'}>
                     <Text>{item.cant}x {item.title.substring(0,60)}</Text>
                     <Text>$ {item.cant*item.price}</Text>
-                    </Flex>
+                    </Flex></ListItem>
             })}
+            </UnorderedList>
             <Heading as={'h3'} textAlign={'right'}>Total: $ {getTotal()}</Heading>
         </Box>
             

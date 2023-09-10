@@ -1,10 +1,10 @@
-import { Box, Button, Card, Container, Flex, Heading, Text, useBoolean } from "@chakra-ui/react"
-import { NavBar } from "./NavBar"
+import { Box, Button, Container, Flex, Heading, Text } from "@chakra-ui/react"
 import { firestore } from "../firebase/client"
-import { addDoc, collection, getDocs, getDoc, doc } from "firebase/firestore"; 
+import { addDoc, collection, getDocs } from "firebase/firestore"; 
 import { useEffect, useState } from "react";
 import OrderList from "./OrderList";
 import Loader from "./Loader";
+import { TitleBar } from "./TitleBar";
 
 function Admin(){
     const [productosDB,setProductosDB] = useState([])
@@ -24,6 +24,11 @@ function Admin(){
             setIsLoading(false)
             setOrdenes(o)
         })
+
+        return () => {
+            setOrdenes([])
+            setIsLoading(true)
+        }
     },[])
 
     
@@ -68,7 +73,7 @@ function Admin(){
 
     return <>
     <Container maxW='1200px'>
-        <NavBar navigation={[{link:'/admin',name:'Administracion',active:true}]}/>
+        <TitleBar navigation={[{link:'/admin',name:'Administracion',active:true}]}/>
         <Flex my={4}>
             <Button onClick={handleAgregarProductos}>Agregar productos a firestore</Button>
             <Text p={2}>{productosLog}</Text>

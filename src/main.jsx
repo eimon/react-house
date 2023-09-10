@@ -8,12 +8,14 @@ import { ChakraProvider } from "@chakra-ui/react";
 import CartProvider from "./context/cartContext";
 import Admin from "./components/Admin";
 import Checkout from "./components/Checkout";
+import { NavBar } from "./components/NavBar";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
       <CartProvider>
         <BrowserRouter>
+          <NavBar />
           <Routes>
             <Route path="/" element={<ItemListContainer />} />
             <Route path="/categoria/:idCategoria" element={<ItemListContainer />} />

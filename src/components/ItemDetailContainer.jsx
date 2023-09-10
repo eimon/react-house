@@ -1,57 +1,49 @@
 import ItemDetail from "./ItemDetail";
-//Item individual. Ruta: "/item/:id"
-
 import { useEffect,useState } from "react";
-import { useParams,Link } from 'react-router-dom';
-import { NavBar } from "./NavBar";
-import CarritoWidget from './CarritoWidget';
-import { Container, Flex, SimpleGrid } from "@chakra-ui/react";
+import { useParams } from 'react-router-dom';
+import { Container, Flex } from "@chakra-ui/react";
 import Loader from './Loader';
 import { firestore } from "../firebase/client";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, where, query } from "firebase/firestore";
+import E404 from "./E404";
+import { TitleBar } from "./TitleBar";
 
 const ItemDetailContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const [categorias,setCategorias] = useState([]);
     const [navigation,setNavigation] = useState([])
-    useEffect(()=>{
-        fetch('https://fakestoreapi.com/products/categories')
-                .then(res=>res.json())
-                .then(json=>setCategorias(json))
-    },[])
-
+    
     const [item,setItem] = useState({})
     const {idItem} = useParams()
 
-    const handleOnClick = () =>{
-        setIsLoading(true)
-    }
-
     useEffect(()=>{
         let itemDB = {}
-        const docsRef = collection(firestore,'productos')
+        setIsLoading(true)
+        let docsRef = collection(firestore,'productos')
+        docsRef = query(docsRef,where("id","==",parseInt(idItem)))
         getDocs(docsRef).then((snap)=>{
             snap.forEach(i=>{
-                if(i.data().id==idItem){
-                    itemDB = {...i.data()}
-                }
+                itemDB = {...i.data()}
+                // if(i.data().id==idItem){
+                // }
             })
             setItem(itemDB)
             setIsLoading(false)
+            setNavigation([{link:'/',name:'Inicio'},{link:`/categoria/${itemDB.category}`,name:itemDB.category},{link:`/item/${itemDB.id}`,name:itemDB.title}])
         })
-        setItem(itemDB)
-        setNavigation([{link:'/',name:'Inicio'},{link:`/categoria/${itemDB.category}`,name:itemDB.category},{link:`/item/${itemDB.id}`,name:itemDB.title}])
+
+        return () => {
+            setItem({})
+        }
     },[]);
 
     return <>
         <Container maxW='1200px'>
-            <NavBar items={categorias} handleOnClick={handleOnClick} titulo={item.title} navigation={navigation} ><CarritoWidget /></NavBar>
+            <TitleBar titulo={item.title} navigation={navigation} />
             
             {isLoading?<Loader />:''}
-            
-            <Flex maxWidth={'sm'} m={'auto'}>
-                <ItemDetail producto={item} isSingle={true} />
-            </Flex>
+            {item.length==null?(<Flex maxWidth={'sm'} m={'auto'}>
+                    <ItemDetail producto={item} isSingle={true} />
+                </Flex>):<E404 />}
         </Container>
     </>
 }

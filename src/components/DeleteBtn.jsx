@@ -1,11 +1,11 @@
-import { Button, useDisclosure } from "@chakra-ui/react"
+import { Button } from "@chakra-ui/react"
 import { useCartContext } from "../context/cartContext"
 import { DeleteIcon } from "@chakra-ui/icons"
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useState } from "react"
 
-const ContadorCarrito = ({item,onClose}) => {
+const DeleteBtn = ({item,onClose}) => {
     const {quitarItem,updateTotalItems} = useCartContext()
     const DeleteSwal = withReactContent(Swal)
     const [producto] = useState({...item})
@@ -34,10 +34,10 @@ const ContadorCarrito = ({item,onClose}) => {
     }
 
     return <>
-        <Button onClick={handleQuitar}>
-            <DeleteIcon />
+        <Button onClick={handleQuitar} bg={'#ed3e2f'}>
+            <DeleteIcon bgSize={'sm'}/>
         </Button>
     </>
 }
 
-export default ContadorCarrito
+export default DeleteBtn

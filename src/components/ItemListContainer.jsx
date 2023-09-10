@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import ItemDetail from './ItemDetail';
 import { useParams } from 'react-router-dom';
-import { NavBar } from './NavBar';
 import Loader from './Loader';
 import { Container, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { firestore } from '../firebase/client';
 import { collection, getDocs, where, query } from 'firebase/firestore';
+import { TitleBar } from './TitleBar';
 
 const ItemListContainer = () => {
 
@@ -17,6 +17,7 @@ const ItemListContainer = () => {
 
     useEffect(() => {
         const i = []
+        setIsLoading(true)
         let itemsRef = collection(firestore,"productos")
         if(idCategoria){
             itemsRef = query(itemsRef,where("category","==",idCategoria))
@@ -31,6 +32,12 @@ const ItemListContainer = () => {
             setItems(i)
             setItemsFiltered(i)
         })
+
+        return () => {
+            setIsLoading(true)
+            setItems([])
+            setItemsFiltered([])
+        }
     },[idCategoria]);
 
     const handleOnClick = () =>{
@@ -47,7 +54,7 @@ const ItemListContainer = () => {
     
     return <>
         <Container maxW='1200px'>
-            <NavBar handleOnClick={handleOnClick} titulo={idCategoria??'Tiendita'} navigation={navigation} />
+            <TitleBar handleOnClick={handleOnClick} titulo={idCategoria??'Tiendita'} navigation={navigation} />
             
             <Input type="text" onKeyUp={handleKeyUp} placeholder='Buscar en esta página'></Input>
             {isLoading?<Loader />:''}

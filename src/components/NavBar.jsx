@@ -3,14 +3,23 @@ import CarritoWidget from './CarritoWidget';
 import { useEffect, useState } from 'react';
 import { Flex,Menu, MenuButton, MenuList, MenuItem,Button} from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '../firebase/client';
 
 
-export const NavBar = ({logo,handleOnClick}) => {
+export const NavBar = ({logo}) => {
     const [categorias,setCategorias] = useState([]);
     useEffect(()=>{
-        fetch('https://fakestoreapi.com/products/categories')
-                .then(res=>res.json())
-                .then(json=>setCategorias(json))
+        const catAdd = []
+        const categoriasRef = collection(firestore,'categorias')
+        getDocs(categoriasRef).then(catSnap=>{
+            catSnap.forEach(cat=>catAdd.push(cat.data()))
+            setCategorias(catAdd)
+        })
+        
+        return () => {
+            setCategorias([])
+        }
     },[])
 
     return <>
@@ -26,9 +35,10 @@ export const NavBar = ({logo,handleOnClick}) => {
                     Categorías
                 </MenuButton>
                 <MenuList>
-                    {categorias.map((item,index)=>{
-                        return (<Link key={index} to={`/categoria/${item}`} onClick={handleOnClick}><MenuItem>
-                                        {item}
+                    {console.log(categorias[0])}
+                    {categorias?.map((item,index)=>{
+                        return (<Link key={index} to={`/categoria/${item.name}`}><MenuItem>
+                                        {item.name}
                                         </MenuItem>
                                     </Link>
                                 )
